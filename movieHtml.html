@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+         *{
+        box-sizing: border-box;
+    }
+
+    :root{
+        --primary-color:#22254b;
+        --secondary-color:#373b69;
+    }
+
+    body{
+        background-color: var(--primary-color);
+        font-family: sans-serif;
+        margin: 0;
+    }
+
+    header{
+        padding: 1rem;
+        display: flex;
+        justify-content: flex-end;
+        background-color: var(--secondary-color);
+    }
+    .search{
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+    }
+    .search:focus{
+        outline: 10;
+        background-color: white;
+    }
+    main{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content:center;
+    }
+    .movie{
+        width: 200px;
+        margin: 1rem;
+        border-radius: 3px;
+        box-shadow: 0.1px 4px 5px rgba(0,0,0,0.1);
+        background-color: var(--secondary-color);
+        position: relative;
+        overflow: hidden;
+
+    }
+
+    .movie img{
+        width: 100%;
+
+    }
+
+    .movie-info{
+        color: whitesmoke;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem 1rem 1rem;
+        letter-spacing: 0.5px;
+    }
+    .movie-info h3{
+        margin-top: 0;
+        
+    }
+    .movie-info span{
+        background-color: var(--primary-color);
+        padding: 0.25rem 0.5rem;
+        border-radius: 3px;
+        font-weight: bold;
+       
+        
+    }
+
+    .movie-info span.green{
+        color: lightgreen;
+    }
+    .movie-info span.orange{
+        color: orange;
+    }
+    .movie-info span.red{
+        color: red;
+    }
+    
+    .overview{
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: whitesmoke;
+        padding: 1rem;
+        max-height: 100%;
+        transform: translateY(101%);
+        transition: transform 0.3s ease-in;
+    }
+
+    .movie:hover .overview{
+        transform:translateY(0);
+    }
+    </style>
+   
+    
+</head>
+<body>
+    <header>
+        <form id="form">
+            <input type="text" placeholder="Search..." id="search" class="search">
+        </form>
+    </header>
+
+    <main id="main">
+        <div class="movie">
+            <img src="https://m.media-amazon.com/images/M/MV5BNDYxNjQyMjAtNTdiOS00NGYwLWFmNTAtNThmYjU5ZGI2YTI1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg" alt="">
+            
+            
+            <div class="movie-info">
+                <h3>Movie Title</h3>
+                <span class="green">9.8</span>
+            </div>
+           
+
+            <div class="overview">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugiat ea repudiandae, nobis corporis exercitationem similique. Sint, beatae! Modi ab numquam explicabo possimus nesciunt consequatur, deserunt ipsa alias aliquam, id facilis?
+           </div>
+            </div>
+        <div class="movie">
+            <img src="https://m.media-amazon.com/images/M/MV5BNDYxNjQyMjAtNTdiOS00NGYwLWFmNTAtNThmYjU5ZGI2YTI1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg" alt="">
+
+            <div class="movie-info">
+                <h3>Movie Title</h3>
+                <span class="green">9.8</span>
+            </div>
+            
+
+        <div class="overview">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugiat ea repudiandae, nobis corporis exercitationem similique. Sint, beatae! Modi ab numquam explicabo possimus nesciunt consequatur, deserunt ipsa alias aliquam, id facilis?</div>
+    </div>
+
+        <div class="movie">
+            <img src="https://m.media-amazon.com/images/M/MV5BNDYxNjQyMjAtNTdiOS00NGYwLWFmNTAtNThmYjU5ZGI2YTI1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg" alt="">
+
+            <div class="movie-info">
+                <h3>Movie Title</h3>
+                <span class="green">9.8</span>
+                
+            </div>
+            
+       
+
+        <div class="overview">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugiat ea repudiandae, nobis corporis exercitationem similique. Sint, beatae! Modi ab numquam explicabo possimus nesciunt consequatur, deserunt ipsa alias aliquam, id facilis?</div>
+    </div>
+    </main>
+</body>
+</html>
+
+
+<script>
+    //TMDB
+
+    const API_KEY = 'api_key=1cf50e6248dc270629e802686245c2c8';
+    
+    const BASE_URL = 'https://api.themoviedb.org/3';
+    
+    const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&'+API_KEY ;
+    
+    const img_url = 'https://image.tmdb.org/t/p/w500';
+
+    const url = 'https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=1cf50e6248dc270629e802686245c2c8';
+
+    const SearchUrl = BASE_URL + '/search/movie?&'+API_KEY;
+    
+    const main = document.getElementById("main");
+    const form = document.getElementById("form");
+    const search = document.getElementById("search");
+
+    const recomended = document.getElementById("ans");
+    
+    function getMovie(u){
+    fetch(u)
+
+    .then((res)=>{
+     return res.json();
+    })
+    .then((res)=>{
+     console.log("res:",res.results);
+     showMovies(res.results);
+    });
+
+}
+getMovie(url)
+
+    function showMovies(data){
+        main.innerHTML = '';
+     data.forEach(movie => {
+         const{title, poster_path, vote_average, overview} = movie;
+         const movieEl = document.createElement("div");
+         movieEl.classList.add('movie');
+         movieEl.innerHTML = `
+         <img src="${img_url+poster_path}" alt="">
+
+        <div class="movie-info">
+            <h3>${title}</h3>
+            <span class="${getColor(vote_average)}">${vote_average}</span>
+            
+        </div>
+      
+        
+        <div class="overview">
+            ${overview}
+        </div>
+         `
+         
+         main.appendChild(movieEl)
+     });
+    }
+
+
+    function getColor(vote){
+        if(vote>=8) return 'green';
+        else if(vote>=5) return 'orange';
+        else return 'red';
+        
+        
+        
+    }
+
+
+
+    form.addEventListener('submit',(e)=>{
+        e.preventDefault();
+        const searchTerms = search.value;
+        if(searchTerms){
+            getMovie(SearchUrl+'&query='+searchTerms);
+        }
+
+        else{
+            getMovie(url)  
+        }
+    })
+
+</script>
