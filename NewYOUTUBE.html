@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body{
+        min-width: 300px;
+        max-width: 100%;
+      }
+      #videos{
+        display: grid;
+        grid-template-columns: 20% 20% 20% 20%;
+        gap: 5%;
+        justify-content: center;
+       
+      }
+      #input{
+          display: flex;
+          justify-content: space-between;
+          
+          
+
+      }
+
+   
+
+    </style>
+  </head>
+  <body>
+      <div id="input">
+         <img src="https://cdn.mos.cms.futurecdn.net/8gzcr6RpGStvZFA2qRt4v6.jpg" style="width: 80px;">
+         <div style="display: flex;">
+            <input type="text" id="query" placeholder="Search for a Video" style="width: 500px; height:30px; margin-bottom:20px; margin-top: 11px; "/>
+       
+            <button onclick="searchVideos()" style="width: 50px; height: 35px; margin-top: 11px;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Search_Icon.svg/1024px-Search_Icon.svg.png" style="width: 25px;" alt=""></button>
+  
+         </div>
+         <div>
+           <img src="https://yt3.ggpht.com/yti/APfAmoEGnYXIN1W_U5ihQbXwkOslpjlBjRZTmJg9gkPdUA=s88-c-k-c0x00ffffff-no-rj-mo" style="width: 35px; border-radius: 20px; margin-top: 11px;" >     
+        </div>
+      </div>
+  
+
+    <div id="videos"></div>
+  </body>
+</html>
+
+
+
+<script>
+    //const popularUrl = `https://youtube.googleapis.com/youtube/v3/search?q=trending&type=video&key=AIzaSyAdGwhAA-vxSYvpIvr6sQc1RuzEgYavMng&maxResults=20`;
+
+   // const SearchUrl = `https://youtube.googleapis.com/youtube/v3/search?q=${query}&type=video&key=AIzaSyAdGwhAA-vxSYvpIvr6sQc1RuzEgYavMng&maxResults=20`;
+
+    let videos = document.getElementById("videos");
+
+    async function searchVideos(){
+        
+       var query = document.getElementById("query").value;
+       if(query){
+        var res = await fetch(`https://youtube.googleapis.com/youtube/v3/search?q=${query}&type=video&key=AIzaSyAdGwhAA-vxSYvpIvr6sQc1RuzEgYavMng&maxResults=20`); 
+       }
+       else{
+        var res = await fetch(`https://youtube.googleapis.com/youtube/v3/search?q=indiaMostPopularVideos&type=video&key=AIzaSyAdGwhAA-vxSYvpIvr6sQc1RuzEgYavMng&maxResults=20`);
+       }
+       
+      
+        let data = await res.json();
+        console.log("data:",data);
+       appendVideo(data.items);
+    }
+    searchVideos()
+    
+    
+   
+    
+    function appendVideo(video_data){
+      videos.innerHTML=null;
+     //id:videoId in the fetch link
+      video_data.forEach(({id:{videoId}}) => {
+        console.log("videos:",videoId);
+
+        let div = document.createElement("div");
+        div.innerHTML=`<iframe width="100%" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        videos.append(div);
+      });
+    }
+</script>
