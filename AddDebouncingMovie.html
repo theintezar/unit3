@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+          box-sizing: border-box;
+          
+        }
+        body{
+          background-color:steelblue;
+        }
+      
+        .main{
+            display: flex;
+            justify-content: space-between;
+            border: 2px solid black;
+            padding: 5px;
+         
+        }
+
+        .container{
+          width: 20%;
+          padding: 3px;
+          background-color: #333;
+          border-radius: 6px;
+          overflow: hidden;
+          /* top: 0;
+          left: 0; */
+        }
+
+        .container>div{
+          position: absolute;
+          width: 19%;
+          background-color: #333;
+          border-radius: 6px;
+          overflow: hidden;
+        }
+
+        .container input{
+          background-color: transparent;
+          width: 100%;
+          border: 0;
+          font-size: 15px;
+          color: #fff;
+          padding: 0.5rem 1rem;
+        }
+        .suggestion{
+          border-top: 1px solid #999;
+          
+        }
+    
+        .suggestion>div{
+          border-top: 1px solid #999;
+          padding: 10px;
+          font-size: 17px;
+          color: #fff;
+          
+         
+        }
+    
+        .suggestion>div:hover{
+          background-color: blue;
+        }
+    
+        #contain{
+          
+         display: flex;
+         justify-content: center;
+         flex-wrap:wrap;
+        }
+        #contain>div{
+        background-color: lightskyblue;
+        flex-basis: 20%;
+        margin: 10px;
+        box-shadow: 0.1px 4px 5px rgba(0,0,0,0.5);
+        
+        }
+    
+        #contain>div img{
+        width: 100%;
+        
+        }
+        p{
+          padding: 6px;
+        }
+        h3{
+          padding: 6px;
+        }
+        </style>
+</head>
+<body>
+   <div class="main">
+     <div>
+       <img src="https://images.creativemarket.com/0.1.0/ps/7414066/600/400/m2/fpnw/wm1/logo-design-for-movie-production-company-01-.jpg?1575502358&s=50e3d37c1ab493df98baf6eb75f2a430&fmt=webp" alt="" style="width: 50px; padding: 4px;">
+     </div>
+
+    <div class="container">
+        <input oninput="debounce(main,500)" type="text" placeholder="Search here..." id="movie"/>
+        <div class="suggestion" id="searchElement">
+        
+        </div>
+    </div>
+  </div>
+
+    
+      <div id="contain"></div>
+     
+    
+</body>
+</html>
+
+<script>
+
+    const API_KEY = 'api_key=1cf50e6248dc270629e802686245c2c8';
+    
+    const BASE_URL = 'https://api.themoviedb.org/3';
+    
+    const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&'+API_KEY ;
+    
+    const img_url = 'https://image.tmdb.org/t/p/w500';
+
+    const url = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=1cf50e6248dc270629e802686245c2c8`;
+
+    const SearchUrl = BASE_URL + '/search/movie?&'+API_KEY;
+
+    var searchEle = document.getElementById("searchElement");
+    var MoviesDiv = document.getElementById("contain")
+
+    let timerId;
+
+ 
+
+
+    async function getMovie(u){
+        let res = await fetch(u);
+        var data = await res.json();
+        console.log(data);
+        showData(data.results)
+        return data;
+        
+        
+        
+    }
+    
+
+   
+
+    function showMovies(data){
+     searchEle.innerHTML = null; 
+     MoviesDiv.innerHTML = null;
+        
+        data.forEach((movie) => {
+          
+            const{title, poster_path, vote_average, overview} = movie;
+            var titleDiv = document.createElement("div");
+            
+            titleDiv.innerHTML = title;
+
+            let display = document.createElement("div");
+            let image = document.createElement("img");
+            image.src =img_url+poster_path;
+        
+
+            let titles = document.createElement("p");
+            titles.innerHTML = title;
+
+            let rating = document.createElement("h3");
+            rating.innerHTML = vote_average;
+
+            display.append(image,titles,rating);
+            MoviesDiv.appendChild(display);
+
+            searchEle.appendChild(titleDiv);
+           
+            
+           
+           
+        });
+    }
+    
+           
+
+            
+            function showData(d){
+            
+            
+                
+                d.forEach((m) => {
+                  
+            const{title, poster_path, vote_average, overview} = m;
+           
+
+            let display = document.createElement("div");
+            let image = document.createElement("img");
+            image.src =img_url+poster_path;
+
+            let titles = document.createElement("p");
+            titles.innerHTML = title;
+
+            let rating = document.createElement("h3");
+            rating.innerHTML = vote_average;
+            
+
+            display.append(image,titles,rating);
+            MoviesDiv.appendChild(display);
+
+      });
+    }
+
+    
+
+    async function main(){
+        var name = document.getElementById("movie").value;
+
+        let res = await getMovie(SearchUrl+'&query='+name);
+        let movie_data = res.results;
+
+        showMovies(movie_data);
+    }
+
+     if(name){
+
+      getMovie(SearchUrl+'&query='+name);
+  
+     }
+     else{
+      getMovie(url);
+}
+ 
+     function debounce(func, time){
+    if(timerId){
+     clearTimeout(timerId);
+}
+
+
+      timerId = setTimeout(function(){
+      func();
+      }, time);
+      searchEle.innerHTML = null;   
+}
+
+
+
+</script>
